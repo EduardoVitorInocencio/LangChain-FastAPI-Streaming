@@ -1,114 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Skolo Online</title>
+    <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat with AI</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f2f2f2;
-        }
-
-        .chat-container {
-            border-radius: 5px;
-            background-color: white;
-            padding: 20px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        #result {
-            height: 400px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: #fff;
-            text-align: left;
-        }
-
-        #message {
-            width: calc(100% - 90px);
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007BFF;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="chat-container">
-        <h1>Chat with AI</h1>
-        <div id="result"></div>
-        <input type="text" id="message" placeholder="Type your message here">
-        <button onclick="sendMessage()">Send</button>
+    <!-- Google Fonts Link For Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <button class="chatbot-toggler">
+      <span class="material-symbols-rounded">mode_comment</span>
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <div class="chatbot">
+      <header>
+        <h2>Chatbot</h2>
+        <span class="close-btn material-symbols-outlined">close</span>
+      </header>
+      <ul class="chatbox">
+        <li class="chat incoming">
+          <span class="material-symbols-outlined">smart_toy</span>
+          <p>Hi there 👋<br>How can I help you today?</p>
+        </li>
+      </ul>
+      <div class="chat-input">
+        <textarea placeholder="Enter a message..." spellcheck="false" required></textarea>
+        <span id="send-btn" class="material-symbols-rounded">send</span>
+      </div>
     </div>
 
-    <script>
-        async function sendMessage() {
-    const messageInput = document.getElementById("message");
-    const resultDiv = document.getElementById("result");
-    const message = messageInput.value.trim();
-
-    if (!message) return;
-
-    messageInput.value = "";
-    resultDiv.innerHTML += `<br><strong>You:</strong> ${message}<br>`;
-
-    try {
-        const response = await fetch('http://localhost:8000/stream_chat/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: message })
-        });
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder('utf-8');
-        let firstChunk = true;
-
-        function processResult({ done, value }) {
-            if (done) return;
-            const token = decoder.decode(value);
-
-            if (firstChunk) {
-                resultDiv.innerHTML += `🤖 <strong>AI:</strong> ${token}`;
-                firstChunk = false;
-            } else {
-                resultDiv.innerHTML += token;
-            }
-
-            return reader.read().then(processResult);
-        }
-        
-        reader.read().then(processResult);
-    } catch (error) {
-        resultDiv.innerHTML += `<span style="color: red;">Error: Unable to connect to the server.</span><br>`;
-    }
-}
-
-    </script>
-</body>
+  </body>
 </html>
